@@ -6,3 +6,36 @@ body {
 a {
   color: #00B7FF;
 }
+
+.achievement {
+    background: #4F4F4E;
+    border-radius : 2px;
+    height : 72px;
+    width : 772px;
+}
+
+.achievement .icon {
+    float : left;
+    width: 64px;
+    height: 64px;
+    margin: 4px 4px 10px 4px;
+}
+
+.achievement .text {
+    float : left;
+    padding : 8px;
+}
+
+.achievement .title {
+    color: #9DC34C;
+    font-family:arial, helvetica, tahoma, trebuchet ms, sans-serif;		
+    font-size:20px;
+}
+
+.achievement .description {
+    color: #c8b996;
+    font-family: tahoma, helvetica, arial, trebuchet ms, sans-serif;		
+    font-size: 11px;
+    font-weight: bold;
+}
+
