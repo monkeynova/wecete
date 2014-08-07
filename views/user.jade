@@ -1,0 +1,9 @@
+extends layout
+
+block content
+  h1 #{username}
+  p #{realname}
+  ul
+  for c in collections
+    a(href='/collection/'+c.id)
+      li= c.title  

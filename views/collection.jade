@@ -6,4 +6,5 @@ block content
   h1 #{title}
   p #{description}
   for a in achievements
-    +achievement(a)
+    a(href='/achievement/'+a.id)
+      +achievement(a)
