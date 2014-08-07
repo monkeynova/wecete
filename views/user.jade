@@ -1,8 +1,9 @@
 extends layout
 
 block content
-  h1 #{username}
-  p #{realname}
+  h1= username
+  p= realname
+  h2 Collections
   ul
   for c in collections
     a(href='/collection/'+c.id)

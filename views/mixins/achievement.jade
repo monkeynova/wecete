@@ -1,6 +1,12 @@
 mixin achievement(a)
   .achievement
-    img.icon(src='')
-    .text
-      .title #{a.title}
-      .description #{a.description}
+    .have
+      img.icon(src='/icon/' + (have_icon || 1))
+      .text
+        .title= a.title
+        .description= a.description
+    .need
+       img.icon(src='/icon/' + (need_icon || 0))
+       .text
+         .title= a.title
+         .description= a.description

@@ -12,11 +12,19 @@ exports.index = function(req, res){
   res.render('index', { title: 'WeCete' });
 };
 
+exports.icon = function(req,res){
+    db.all( "SELECT * from icons where id = " + req.params.id + ";", function (err,icons) {
+	    var icon = icons[0];
+	    res.set( 'Content-type', icon.mime_type );
+	    res.send( icon.data );
+	   });
+};
+
 exports.user = function(req,res) {
     db.all( "SELECT * from users where id = " + req.params.id + ";", function (err,users) {
 	    var user = users[0];
-	    db.all( "SELECT * from collections where user = '" + user.id + "';", function (err,collections) {
-		    user.collections = collections;
+	    db.all( "SELECT * from collections where owner = '" + user.id + "';", function (err,collections) {
+		    user.collections = collections || [];
 		    res.render('user',user);
 		});
     });

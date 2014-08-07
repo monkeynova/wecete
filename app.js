@@ -30,6 +30,7 @@ app.get('/', routes.index);
 app.get('/user/:id', routes.user );
 app.get('/collection/:id', routes.collection );
 app.get('/achievement/:id', routes.achievement );
+app.get('/icon/:id', routes.icon );
 
 http.createServer(app).listen(app.get('port'), function(){
   console.log('Express server listening on port ' + app.get('port'));

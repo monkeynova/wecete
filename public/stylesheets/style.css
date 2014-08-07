@@ -14,6 +14,9 @@ a {
     width : 772px;
 }
 
+.achievement .have { display : block; }
+.achievement .need { display : none; }
+
 .achievement .icon {
     float : left;
     width: 64px;
