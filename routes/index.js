@@ -12,6 +12,12 @@ exports.index = function(req, res){
   res.render('index', { title: 'WeCete' });
 };
 
+exports.collection = function(req,res){
+    db.each( "SELECT * from collections WHERE id = 1", function (err,row) {
+	    res.render('collection',row);
+	});
+};
+
 exports.achievement = function(req,res){
     db.each( "SELECT * from achievements WHERE id = 1", function (err,row) {
 	    res.render('achievement', row );
