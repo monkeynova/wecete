@@ -1,5 +1,9 @@
 extends layout
 
+include mixins/achievement.jade
+
 block content
   h1 #{title}
   p #{description}
+  for a in achievements
+    +achievement(a)

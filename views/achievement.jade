@@ -1,8 +1,7 @@
 extends layout
 
+include mixins/achievement.jade
+
 block content
-  div.achievement
-    img.icon(src='')
-    div.text
-      div.title #{title}
-      div.description #{description}
+  +achievement(a)
+

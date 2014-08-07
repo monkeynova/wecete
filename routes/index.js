@@ -14,12 +14,13 @@ exports.index = function(req, res){
 
 exports.collection = function(req,res){
     db.each( "SELECT * from collections WHERE id = 1", function (err,row) {
-	    res.render('collection',row);
+	    row.achievements = [ { title : 'Foo' } ];
+	    res.render('collection', row );
 	});
 };
 
 exports.achievement = function(req,res){
     db.each( "SELECT * from achievements WHERE id = 1", function (err,row) {
-	    res.render('achievement', row );
+	    res.render('achievement', { a : row } );
 	});
 };
