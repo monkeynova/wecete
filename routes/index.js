@@ -8,16 +8,38 @@ var path = require('path');
 var db_file = path.join( process.env.HOME, 'wecete.db' );
 var db = new sqlite3.Database( db_file );
 
-exports.index = function(req, res){
+function currentUser(req)
+{
+    return 1; // monkeynova
+}
+
+function canEdit(req,userID,editable)
+{
+    if ( editable.owner == userID )
+	{
+	    return true;
+	}
+
+    return false;
+}
+
+exports.index = function(req, res)
+{
   res.render('index', { title: 'WeCete' });
 };
 
-exports.icon = function(req,res){
-    db.all( "SELECT * from icons where id = " + req.params.id + ";", function (err,icons) {
-	    var icon = icons[0];
-	    res.set( 'Content-type', icon.mime_type );
-	    res.send( icon.data );
-	   });
+exports.icon = function(req,res)
+{
+    db.all
+    (
+     "SELECT * from icons where id = " + req.params.id + ";",
+     function (err,icons)
+     {
+	 var icon = icons[0];
+	 res.set( 'Content-type', icon.mime_type );
+	 res.send( icon.data );
+     }\
+    );
 };
 
 exports.user = function(req,res) {

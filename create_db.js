@@ -6,8 +6,8 @@ var db = new sqlite3.Database( db_fname );
 
 if ( fs.existsSync( db_fname ) )
 {
+    console.log( 'Removing existing db' );
     fs.unlinkSync( db_fname );
-    console.log( 'Removed existing db' );
 }
 
 db.serialize
