@@ -1,0 +1,14 @@
+PRAGMA foreign_keys=OFF;
+BEGIN TRANSACTION;
+CREATE TABLE icons (  id INTEGER PRIMARY KEY AUTOINCREMENT,  mime_type TEXT,  data BLOB);
+CREATE TABLE users (  id INTEGER PRIMARY KEY AUTOINCREMENT,  username TEXT UNIQUE,  realname TEXT,  email TEXT,  website TEXT,  avatar INTEGER,  FOREIGN KEY( avatar ) REFERENCES icons(id));
+INSERT INTO "users" VALUES(1,'monkeynova','Keith Peters','keith@monkeynova.com','http://www.monkeynova.com/',NULL);
+CREATE TABLE collections (  id INTEGER PRIMARY KEY AUTOINCREMENT,  title TEXT,  description TEXT,  user INTEGER NOT NULL,  FOREIGN KEY( user ) REFERENCES users(id));
+INSERT INTO "collections" VALUES(1,'Test','Nothing to see here',1);
+CREATE TABLE achievements (  id INTEGER PRIMARY KEY AUTOINCREMENT,  title TEXT,  description TEXT,  icon INTEGER,  collection INTEGER NOT NULL,  FOREIGN KEY( icon ) REFERENCES icons(id),  FOREIGN KEY( collection ) REFERENCES collections(id));
+INSERT INTO "achievements" VALUES(1,'You''ve got Mail!','Receive an email asking if the user''s email is working',NULL,1);
+DELETE FROM sqlite_sequence;
+INSERT INTO "sqlite_sequence" VALUES('users',1);
+INSERT INTO "sqlite_sequence" VALUES('collections',1);
+INSERT INTO "sqlite_sequence" VALUES('achievements',1);
+COMMIT;
