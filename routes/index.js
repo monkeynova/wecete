@@ -44,9 +44,10 @@ exports.icon = function(req,res)
 
 exports.user = function(req,res)
 {
+    var user_id = req.params.id || currentUser( req );
     db.all
     (
-        "SELECT * from users where id = " + req.params.id + ";",
+        "SELECT * from users where id = " + user_id + ";",
         function (err,users)
         {
             var user = users[0];
@@ -55,8 +56,8 @@ exports.user = function(req,res)
                 "SELECT * from collections where owner = '" + user.id + "';",
                  function (err,collections)
                  {
-		    user.collections = collections || [];
-		    res.render('user',user);
+		     user.collections = collections || [];
+                     res.render('user', { user : user } );
 		 }
             );
         }
@@ -78,9 +79,17 @@ exports.collection = function(req,res)
                 function (err,achievements)
                 {
                     achievements.forEach( function(a) { a.editable = canEdit( req, currentUser( req ), a ) } );
-
 		    collection.achievements = achievements;
-		    res.render('collection',collection);
+
+                    db.all
+                    (
+                        "SELECT * from users where id = '" + collection.owner + "';",
+                        function (err,owners)
+                        {
+                            collection.owner = owners[0];
+                            res.render('collection', { collection : collection } );
+                        }
+                    );
 		}
             );
 	}
@@ -94,7 +103,7 @@ exports.achievement = function(req,res)
         "SELECT * from achievements WHERE id = " + req.params.id + ";",
         function (err,achievements)
         {
-	    res.render('achievement', { a : achievements[0] } );
+	    res.render('achievement', { achievement : achievements[0] } );
 	}
     );
 };

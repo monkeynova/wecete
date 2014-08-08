@@ -3,13 +3,15 @@ extends layout
 include mixins/achievement.jade
 
 block content
-  h1 #{title}
-  p #{description}
-  for a in achievements
+  h1= collection.title
+  p= collection.description
+  p
+    a(href='/user/' + collection.owner.id)= collection.owner.username
+  for a in collection.achievements
     a(href='/achievement/'+a.id)
       +achievement(a)
     br
-  if editable
+  if collection.editable
     p
       a(href='' onClick="newAchievement(); return false;") +
   #new(style="display:none;")

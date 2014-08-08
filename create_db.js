@@ -12,12 +12,22 @@ if ( fs.existsSync( db_fname ) )
 
 db.serialize
 (
-   function() 
+   function()
    {
+     console.log( 'Creating table privacy' );
+     db.run
+     (
+          "CREATE TABLE privacy " +
+	  "(" +
+          "  id INTEGER PRIMARY KEY," +
+          "  name TEXT" +
+	  ");"
+     );
+
      console.log( 'Creating table icons' );
      db.run
      (
-          "CREATE TABLE icons " + 
+          "CREATE TABLE icons " +
 	  "(" +
 	  "  id INTEGER PRIMARY KEY AUTOINCREMENT," +
 	  "  mime_type TEXT," +
@@ -27,12 +37,12 @@ db.serialize
 	  "  data BLOB" +
 	  ");"
      );
-	
+
      console.log( 'Creating table users' );
      db.run
      (
       "CREATE TABLE users " +
-      "(" + 
+      "(" +
       "  id INTEGER PRIMARY KEY AUTOINCREMENT," +
       "  username TEXT UNIQUE," +
       "  realname TEXT," +
@@ -49,10 +59,14 @@ db.serialize
       "CREATE TABLE collections " +
       "(" +
       "  id INTEGER PRIMARY KEY AUTOINCREMENT," +
+      "  created DATETIME, " +
+      "  modified DATETIME, " +
       "  title TEXT," +
       "  description TEXT," +
       "  owner INTEGER NOT NULL," +
-      "  FOREIGN KEY( owner ) REFERENCES users(id)" +
+      "  privacy INTEGER NOT NULL," +
+      "  FOREIGN KEY( owner ) REFERENCES users(id)," +
+      "  FOREIGN KEY( privacy ) REFERENCES privacy(id)" +
       ");"
      );
 
@@ -86,9 +100,36 @@ db.serialize
       ");"
      );
 
+     console.log( 'Creating table user_follows' );
+     db.run
+     (
+         "CREATE TABLE user_follows " +
+         "(" +
+         "  follower INTEGER, " +
+         "  followee INTEGER, " +
+         "  FOREIGN KEY( follower ) REFERENCES user(id)," +
+         "  FOREIGN KEY( followee ) REFERENCES user(id) " +
+         ");"
+     );
+
+     console.log( 'Creating table collection_follows' );
+     db.run
+     (
+         "CREATE TABLE collection_follows " +
+         "(" +
+         "  user INTEGER, " +
+         "  collection INTEGER, " +
+         "  FOREIGN KEY( user ) REFERENCES users(id)," +
+         "  FOREIGN KEY( collection ) REFERENCES collections(id) " +
+         ");"
+     );
+
      console.log( 'Inserting test achievement' );
+     db.run( "INSERT INTO privacy VALUES ( 0, 'private' );" );
+     db.run( "INSERT INTO privacy VALUES ( 1, 'public' );" );
+     db.run( "INSERT INTO privacy VALUES ( 2, 'followers' );" );
      db.run( "INSERT INTO users VALUES ( NULL, 'monkeynova', 'Keith Peters', 'keith@monkeynova.com', 'http://www.monkeynova.com/', NULL );");
-     db.run( "INSERT INTO collections SELECT NULL, 'Test', 'Nothing to see here', id from users where username = 'monkeynova';" );
+     db.run( "INSERT INTO collections SELECT NULL, date('now'), date('now'), 'Test', 'Nothing to see here', users.id, privacy.id from users, privacy where users.username = 'monkeynova' AND privacy.name = 'public';" );
      db.run( "INSERT INTO achievements SELECT NULL, 'You''ve got Mail!', 'Receive an email asking if the user''s email is working', NULL, NULL, id from collections where title = 'Test';" );
      var need_png_data = fs.readFileSync( 'need_check.png' );
      var have_png_data = fs.readFileSync( 'have_check.png' );

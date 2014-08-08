@@ -28,6 +28,7 @@ if ('development' == app.get('env'))
 }
 
 app.get('/', routes.index);
+app.get('/user', routes.user );
 app.get('/user/:id', routes.user );
 app.get('/collection/add', routes.newCollection );
 app.get('/collection/:id', routes.collection );

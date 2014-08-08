@@ -1,10 +1,10 @@
 extends layout
 
 block content
-  h1= username
-  p= realname
+  h1= user.username
+  p= user.realname
   h2 Collections
   ul
-  for c in collections
+  for c in user.collections
     a(href='/collection/'+c.id)
       li= c.title  
