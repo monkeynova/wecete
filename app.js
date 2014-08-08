@@ -29,7 +29,9 @@ if ('development' == app.get('env'))
 
 app.get('/', routes.index);
 app.get('/user/:id', routes.user );
+app.get('/collection/add', routes.newCollection );
 app.get('/collection/:id', routes.collection );
+app.get('/achievement/add', routes.newAchievement );
 app.get('/achievement/:id', routes.achievement );
 app.get('/icon/:id', routes.icon );
 

@@ -6,7 +6,14 @@ mixin achievement(a)
         .title= a.title
         .description= a.description
     .need
-       img.icon(src='/icon/' + (need_icon || 0))
-       .text
-         .title= a.title
-         .description= a.description
+      img.icon(src='/icon/' + (need_icon || 0))
+      .text
+        .title= a.title
+        .description= a.description
+    if a.editable
+      .edit
+        img.icon(src='/icon/' + (need_icon || 0))
+        .text
+          input.title= a.title
+          input.description= a.description
+

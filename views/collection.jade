@@ -9,7 +9,8 @@ block content
     a(href='/achievement/'+a.id)
       +achievement(a)
     br
-  p
-    a(href='' onClick="newAchievement(); return false;") +
+  if editable
+    p
+      a(href='' onClick="newAchievement(); return false;") +
   #new(style="display:none;")
     +achievement( {} )
