@@ -1,9 +1,9 @@
-doctype html
-html
+mixin header(title)
   head
-    title= title
+    title= site.title + ': ' + title
     link(rel='stylesheet', href='/stylesheets/style.css')
     script(src='/js/jquery-1.11.1.min.js')
     script(src='/js/behavior.js')
-  body
-    block content
+
+mixin footer()
+  p

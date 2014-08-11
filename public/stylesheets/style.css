@@ -7,9 +7,20 @@ a {
   color: #00B7FF;
 }
 
+ul
+{
+    list-style-type : none;
+}
+
+li
+{
+    margin : 4px;
+}
+
 .achievement {
     background: #4F4F4E;
     border-radius : 2px;
+    clear : both;
     height : 72px;
     width : 772px;
 }

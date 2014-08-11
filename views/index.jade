@@ -1,5 +1,10 @@
-extends layout
+include mixins/header.jade
 
-block content
-  h1= title
-  p Welcome to #{title}
+doctype html
+html
+  +header(site,site.title)
+
+  h1= site.title
+  p Welcome to #{site.title}
+
+  +footer

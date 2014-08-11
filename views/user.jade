@@ -1,6 +1,13 @@
-extends layout
+include mixins/header.jade
 
-block content
+doctype html
+html
+  +header( 'User ' + user.username )
+
+  p
+    a(href='/user/' + user.id)
+      img(src='/icon/' + (user.avatar || 2) title=user.username)
+
   h1= user.username
   p= user.realname
   h2 Collections
@@ -8,3 +15,5 @@ block content
   for c in user.collections
     a(href='/collection/'+c.id)
       li= c.title  
+
+  +footer

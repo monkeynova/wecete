@@ -8,6 +8,8 @@ var path = require('path');
 var db_file = path.join( process.env.HOME, 'wecete.db' );
 var db = new sqlite3.Database( db_file );
 
+var site = { title : 'WeCete' };
+
 function currentUser(req)
 {
     return 1; // monkeynova
@@ -25,7 +27,7 @@ function canEdit(req,userID,editable)
 
 exports.index = function(req, res)
 {
-    res.render('index', { title: 'WeCete' });
+    res.render('index', { site : site });
 };
 
 exports.icon = function(req,res)
@@ -35,7 +37,7 @@ exports.icon = function(req,res)
         "SELECT * from icons where id = " + req.params.id + ";",
         function (err,icons)
         {
-	    var icon = icons[0];
+	    var icon = icons[0] || {};
 	    res.set( 'Content-type', icon.mime_type );
 	    res.send( icon.data );
         }
@@ -50,14 +52,14 @@ exports.user = function(req,res)
         "SELECT * from users where id = " + user_id + ";",
         function (err,users)
         {
-            var user = users[0];
+            var user = users[0] || {};
 	    db.all
             (
                 "SELECT * from collections where owner = '" + user.id + "';",
                  function (err,collections)
                  {
 		     user.collections = collections || [];
-                     res.render('user', { user : user } );
+                     res.render('user', { site : site, user : user } );
 		 }
             );
         }
@@ -71,7 +73,7 @@ exports.collection = function(req,res)
         "SELECT * from collections WHERE id = " + req.params.id + ";",
         function (err,collections)
         {
-	    var collection = collections[0];
+	    var collection = collections[0] || {};
             collection.editable = canEdit( req, currentUser( req ), collection );
 	    db.all
             (
@@ -87,7 +89,7 @@ exports.collection = function(req,res)
                         function (err,owners)
                         {
                             collection.owner = owners[0];
-                            res.render('collection', { collection : collection } );
+                            res.render('collection', { site : site, collection : collection } );
                         }
                     );
 		}
@@ -103,14 +105,25 @@ exports.achievement = function(req,res)
         "SELECT * from achievements WHERE id = " + req.params.id + ";",
         function (err,achievements)
         {
-	    res.render('achievement', { achievement : achievements[0] } );
+	    res.render('achievement', { site : site, achievement : achievements[0] || {} } );
 	}
     );
 };
 
 exports.newAchievement = function(req,res)
 {
-    res.send( 404, 'Not Found');
+    var collection_id = req.query.collection;
+    db.all
+    (
+	"INSERT INTO achievements ( collection ) VALUES ( '" + collection_id + "' );" +
+	"UPDATE collections SET modified=date('now') WHERE id = '" + collection_id + "';" +
+	"SELECT last_insert_rowid() AS id FROM achievements;" +
+	function (err,newAchievements)
+        {
+	    console.log( newAchievements[0] );
+	    res.send( { newid : newAchievements[0].id } );	    
+	}
+    );
 }
 
 exports.newCollection = function(req,res)

@@ -1,4 +1,12 @@
-function newAchievement()
+function newAchievement( collection_id )
 {
-    console.log( "should add achievement" );
+    $.ajax
+    ({
+      url : '/achievement/add?collection=' + collection_id,
+    })
+    .always(function( response )
+    {
+	console.log( "should add achievement to DOM" );	
+	console.log( response );
+    });
 }

@@ -1,18 +1,25 @@
-extends layout
-
 include mixins/achievement.jade
+include mixins/header.jade
 
-block content
+doctype html
+html
+  +header( 'Collection  ' + collection.title + " by " + collection.owner.username )
+
+  p
+    a(href='/user/' + collection.owner.id)
+      img(src='/icon/' + (collection.owner.avatar || 2) title=collection.owner.username)
   h1= collection.title
   p= collection.description
-  p
-    a(href='/user/' + collection.owner.id)= collection.owner.username
-  for a in collection.achievements
-    a(href='/achievement/'+a.id)
-      +achievement(a)
-    br
-  if collection.editable
-    p
-      a(href='' onClick="newAchievement(); return false;") +
-  #new(style="display:none;")
-    +achievement( {} )
+
+  ul
+    for a in collection.achievements
+      li
+        a(href='/achievement/'+a.id)
+          +achievement(a)
+    if collection.editable
+      p
+        a(href='' onClick="newAchievement( '" + collection.id + "' ); return false;") +
+      #new(style="display:none;")
+        +achievement( {} )
+
+  +footer
