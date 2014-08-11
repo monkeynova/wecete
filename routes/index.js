@@ -113,15 +113,27 @@ exports.achievement = function(req,res)
 exports.newAchievement = function(req,res)
 {
     var collection_id = req.query.collection;
-    db.all
+    db.serialize
     (
-	"INSERT INTO achievements ( collection ) VALUES ( '" + collection_id + "' );" +
-	"UPDATE collections SET modified=date('now') WHERE id = '" + collection_id + "';" +
-	"SELECT last_insert_rowid() AS id FROM achievements;" +
-	function (err,newAchievements)
+	function()
         {
-	    console.log( newAchievements[0] );
-	    res.send( { newid : newAchievements[0].id } );	    
+	    db.run( "UPDATE collections SET modified=date('now') WHERE id = '" + collection_id + "';" );
+	    db.run
+	    (
+		"INSERT INTO achievements ( collection ) VALUES ( '" + collection_id + "' );",
+		function (err)
+		{	
+		    db.all
+		    (
+			"SELECT last_insert_rowid() AS id FROM achievements;",
+			function (err,newAchievements)
+			{
+			    var newAchievement = newAchievements[0] || {};
+			    res.send( { newid : newAchievement.id } );
+			}
+		    );
+		}
+	    );
 	}
     );
 }

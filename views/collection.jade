@@ -11,15 +11,17 @@ html
   h1= collection.title
   p= collection.description
 
-  ul
+  ul#AchievementList
     for a in collection.achievements
       li
         a(href='/achievement/'+a.id)
           +achievement(a)
     if collection.editable
-      p
-        a(href='' onClick="newAchievement( '" + collection.id + "' ); return false;") +
-      #new(style="display:none;")
-        +achievement( {} )
+      p#AchievementInsert
+        a(href='/achievement/add' onClick="newAchievement( '" + collection.id + "' ); return false;") +
+      #AchievementTemplate(style="display:none;")
+        li
+          a(href='/achievement/???' )
+            +achievement( {} )
 
   +footer
