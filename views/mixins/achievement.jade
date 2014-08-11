@@ -1,19 +1,30 @@
 mixin achievement(a)
-  .achievement
-    .have
-      img.icon(src='/icon/' + (have_icon || 1))
-      .text
-        .title= a.title
-        .description= a.description
-    .need
-      img.icon(src='/icon/' + (need_icon || 0))
-      .text
-        .title= a.title
-        .description= a.description
+  .achievement(id='Achievement-' + a.id)
+    .view
+      .have
+        img.icon(src='/icon/' + (have_icon || site.defaultHave))
+        .text
+          .title= a.title
+          .description= a.description
+      .need
+        img.icon(src='/icon/' + (need_icon || site.defaultNeed))
+        .text
+          .title= a.title
+          .description= a.description
     if a.editable
       .edit
-        img.icon(src='/icon/' + (need_icon || 0))
-        .text
-          input.title= a.title
-          input.description= a.description
+        .have
+          img.icon(src='/icon/' + (have_icon || site.defaultHave))
+          .text
+            .title
+              input.title(name=title value=a.title size=30)
+            .description
+              input.description(name=description value=a.description size=80)
+        .need
+          img.icon(src='/icon/' + (need_icon || site.defaultNeed))
+          .text
+            .title
+              input.title(name=title value=a.title size=30)
+            .description
+              input.description(name=description value=a.description size=80)
 

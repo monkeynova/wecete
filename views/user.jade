@@ -6,7 +6,7 @@ html
 
   p
     a(href='/user/' + user.id)
-      img(src='/icon/' + (user.avatar || 2) title=user.username)
+      img(src='/icon/' + (user.avatar || site.defaultAvatar) title=user.username)
 
   h1= user.username
   p= user.realname

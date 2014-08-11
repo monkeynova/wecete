@@ -7,14 +7,14 @@ html
 
   p
     a(href='/user/' + collection.owner.id)
-      img(src='/icon/' + (collection.owner.avatar || 2) title=collection.owner.username)
+      img(src='/icon/' + (collection.owner.avatar || site.defaultAvatar) title=collection.owner.username)
   h1= collection.title
   p= collection.description
 
   ul#AchievementList
     for a in collection.achievements
       li
-        a(href='/achievement/'+a.id)
+        a(href='/achievement/'+a.id onClick="startEditAchievement( this ); return false;")
           +achievement(a)
     if collection.editable
       p#AchievementInsert
@@ -23,7 +23,7 @@ html
         p= 'Adding...'
       #AchievementTemplate(style="display:none;")
         li
-          a(href='/achievement/???' )
+          a(href='/achievement/???' onClick="startEditAchievement( this ); return false;")
             +achievement( {} )
 
   +footer

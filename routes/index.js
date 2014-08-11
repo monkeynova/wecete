@@ -8,15 +8,26 @@ var path = require('path');
 var db_file = path.join( process.env.HOME, 'wecete.db' );
 var db = new sqlite3.Database( db_file );
 
-var site = { title : 'WeCete' };
+var site =
+{
+    title : 'WeCete',
+    defaultAvatar : 2,
+    defaultHave : 1,
+    defaultNeed : 0
+};
 
 function currentUser(req)
 {
     return 1; // monkeynova
 }
 
-function canEdit(req,userID,editable)
+function canEdit(req,editable,userID)
 {
+    if ( ! userID )
+    {
+	userID = currentUser( req );
+    }
+
     if ( editable.owner == userID )
     {
         return true;
@@ -53,6 +64,8 @@ exports.user = function(req,res)
         function (err,users)
         {
             var user = users[0] || {};
+	    user.owner = user.id;
+	    user.editable = canEdit( req, user );
 	    db.all
             (
                 "SELECT * from collections where owner = '" + user.id + "';",
@@ -74,13 +87,13 @@ exports.collection = function(req,res)
         function (err,collections)
         {
 	    var collection = collections[0] || {};
-            collection.editable = canEdit( req, currentUser( req ), collection );
+            collection.editable = canEdit( req, collection );
 	    db.all
             (
                 "SELECT * from achievements where collection = '" + collection.id + "';",
                 function (err,achievements)
                 {
-                    achievements.forEach( function(a) { a.editable = canEdit( req, currentUser( req ), a ) } );
+                    achievements.forEach( function(a) { a.owner = collection.owner; a.editable = canEdit( req, a ) } );
 		    collection.achievements = achievements;
 
                     db.all
