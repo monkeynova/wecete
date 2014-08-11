@@ -138,7 +138,17 @@ exports.newAchievement = function(req,res)
     );
 }
 
+exports.editAchievement = function(req,res)
+{
+    res.send( 404, 'Not Found');
+}
+
 exports.newCollection = function(req,res)
+{
+    res.send( 404, 'Not Found');
+}
+
+exports.editCollection = function(req,res)
 {
     res.send( 404, 'Not Found');
 }

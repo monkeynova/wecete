@@ -19,6 +19,8 @@ html
     if collection.editable
       p#AchievementInsert
         a(href='/achievement/add' onClick="newAchievement( '" + collection.id + "' ); return false;") +
+      #AchievementSpinner(style="display:none;")
+        p= 'Adding...'
       #AchievementTemplate(style="display:none;")
         li
           a(href='/achievement/???' )
