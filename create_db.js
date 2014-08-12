@@ -131,9 +131,9 @@ db.serialize
      db.run( "INSERT INTO users VALUES ( NULL, 'monkeynova', 'Keith Peters', 'keith@monkeynova.com', 'http://www.monkeynova.com/', NULL );");
      db.run( "INSERT INTO collections SELECT NULL, date('now'), date('now'), 'Test', 'Nothing to see here', users.id, privacy.id from users, privacy where users.username = 'monkeynova' AND privacy.name = 'public';" );
      db.run( "INSERT INTO achievements SELECT NULL, 'You''ve got Mail!', 'Receive an email asking if the user''s email is working', NULL, NULL, id from collections where title = 'Test';" );
-     db.run( "INSERT INTO icons VALUES ( 0, 'image/png', 60, 60, 'need_check', @png )", fs.readFileSync( 'need_check.png' ) );
-     db.run( "INSERT INTO icons VALUES ( 1, 'image/png', 60, 60, 'have_check', @png )", fs.readFileSync( 'have_check.png' ) );
-     db.run( "INSERT INTO icons VALUES ( 2, 'image/png', 128, 128, 'default_avatar', @png )", fs.readFileSync( 'default_avatar.png' ) );
+     db.run( "INSERT INTO icons VALUES ( 0, 'image/png', 60, 60, 'need_check', @png )", fs.readFileSync( 'icons/need_check.png' ) );
+     db.run( "INSERT INTO icons VALUES ( 1, 'image/png', 60, 60, 'have_check', @png )", fs.readFileSync( 'icons/have_check.png' ) );
+     db.run( "INSERT INTO icons VALUES ( 2, 'image/png', 128, 128, 'default_avatar', @png )", fs.readFileSync( 'icons/default_avatar.png' ) );
   }
 );
 
