@@ -15,9 +15,9 @@ function newAchievement( collection_id )
 	toAdd.css( 'display', 'block' );
 	toAdd.id = 'Achievement-' + response.newid;
 	toAdd.find('a').attr('href','/achievement/' + response.newid);
-        addEventHandlers( toAdd );
 	spinner.replaceWith( toAdd );
-	toggleEditAchievement( toAdd );
+        addEventHandlers( toAdd );
+	toggleEditAchievement( toAdd.find( '.achievement' ) );
     });
 }
 
@@ -30,20 +30,38 @@ function toggleAchievement( domAchievement )
 function toggleEditAchievement( domAchievement )
 {
     console.log( 'toggleEdit' );
-    domAchievement.attr( 'editing', function() { return $( this ).attr( 'editing' ) == 0 ? 1 : 0; } );
+    domAchievement.attr
+    (
+        'editing',
+        function()
+        {
+            var curValue = $( this ).attr( 'editing' );
+            if ( curValue === undefined || curValue == 0 )
+            {
+                console.log( curValue + " => 1" );
+                return 1;
+            }
+            console.log( curValue + " => 0" );
+            return 0;
+        }
+    );
     $('.view',domAchievement).toggle();
     $('.edit',domAchievement).toggle();
+    if ( domAchievement.attr( 'editing' ) )
+    {
+        $('.edit .title',domAchievement).focus();
+    }
 }
 
 function addEventHandlers( maybeParent )
 {
-    $('.achievement',maybeParent).attr( 'editing', 0 );
     $('.achievement',maybeParent).on
     (
         'click',
         function ()
         {
-            if ( $( this ).attr( 'editing' ) == 0 )
+            var isEditing = $( this ).attr( 'editing' );
+            if ( isEditing === undefined || isEditing == 0 )
             {
                 toggleAchievement( $( this ) );
             }
