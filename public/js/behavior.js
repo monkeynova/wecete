@@ -15,18 +15,49 @@ function newAchievement( collection_id )
 	toAdd.css( 'display', 'block' );
 	toAdd.id = 'Achievement-' + response.newid;
 	toAdd.find('a').attr('href','/achievement/' + response.newid);
+        addEventHandlers( toAdd );
 	spinner.replaceWith( toAdd );
-	startEditAchievement( response.newid );
+	toggleEditAchievement( toAdd );
     });
 }
 
-function startEditAchievement( domAchievement )
+function toggleAchievement( domAchievement )
 {
-    $('.view',domAchievement).css( 'display', 'none' );
-    $('.edit',domAchievement).css( 'display', 'block' );
+    $('.have',domAchievement).toggle();
+    $('.need',domAchievement).toggle();
 }
 
-function finishEditAchievement( achievement_id )
+function toggleEditAchievement( domAchievement )
 {
+    console.log( 'toggleEdit' );
+    domAchievement.attr( 'editing', function() { return $( this ).attr( 'editing' ) == 0 ? 1 : 0; } );
+    $('.view',domAchievement).toggle();
+    $('.edit',domAchievement).toggle();
+}
 
+function addEventHandlers( maybeParent )
+{
+    $('.achievement',maybeParent).attr( 'editing', 0 );
+    $('.achievement',maybeParent).on
+    (
+        'click',
+        function ()
+        {
+            if ( $( this ).attr( 'editing' ) == 0 )
+            {
+                toggleAchievement( $( this ) );
+            }
+            return false;
+        }
+    );
+    $('.eToggle',maybeParent).on
+    (
+        'click',
+        function ()
+        {
+            var jqueryThis = $( this );
+            toggleEditAchievement( jqueryThis.parents( '.achievement' ) );
+            return false;
+        }
+    );
 }

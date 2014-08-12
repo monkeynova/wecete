@@ -7,21 +7,19 @@ var sqlite3 = require('sqlite3').verbose();
 var path = require('path');
 var db_file = path.join( process.env.HOME, 'wecete.db' );
 var db = new sqlite3.Database( db_file );
-
-var site =
-{
-    title : 'WeCete',
-    defaultAvatar : 2,
-    defaultHave : 1,
-    defaultNeed : 0
-};
+var site = require('./site').site();
 
 function currentUser(req)
 {
     return 1; // monkeynova
 }
 
-function canEdit(req,editable,userID)
+function canRead(req,viewable,userID)
+{
+    return true;
+}
+
+function canWrite(req,editable,userID)
 {
     if ( ! userID )
     {
@@ -65,13 +63,24 @@ exports.user = function(req,res)
         {
             var user = users[0] || {};
 	    user.owner = user.id;
-	    user.editable = canEdit( req, user );
+	    user.editable = canWrite( req, user );
 	    db.all
             (
                 "SELECT * from collections where owner = '" + user.id + "';",
                  function (err,collections)
                  {
-		     user.collections = collections || [];
+		     user.collections = [];
+                     collections.forEach
+                     (
+                         function(c)
+                         {
+                             if ( canRead( req, c ) )
+                             {
+                                 user.collections.push( c );
+                             }
+                         }
+                     );
+
                      res.render('user', { site : site, user : user } );
 		 }
             );
@@ -87,13 +96,13 @@ exports.collection = function(req,res)
         function (err,collections)
         {
 	    var collection = collections[0] || {};
-            collection.editable = canEdit( req, collection );
+            collection.editable = canWrite( req, collection );
 	    db.all
             (
                 "SELECT * from achievements where collection = '" + collection.id + "';",
                 function (err,achievements)
                 {
-                    achievements.forEach( function(a) { a.owner = collection.owner; a.editable = canEdit( req, a ) } );
+                    achievements.forEach( function(a) { a.owner = collection.owner; a.editable = canWrite( req, a ) } );
 		    collection.achievements = achievements;
 
                     db.all
@@ -135,7 +144,7 @@ exports.newAchievement = function(req,res)
 	    (
 		"INSERT INTO achievements ( collection ) VALUES ( '" + collection_id + "' );",
 		function (err)
-		{	
+		{
 		    db.all
 		    (
 			"SELECT last_insert_rowid() AS id FROM achievements;",

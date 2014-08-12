@@ -1,6 +1,8 @@
 mixin achievement(a)
   .achievement(id='Achievement-' + a.id)
     .view
+      if a.editable
+        button.eToggle Edit
       .have
         img.icon(src='/icon/' + (have_icon || site.defaultHave))
         .text
@@ -13,6 +15,7 @@ mixin achievement(a)
           .description= a.description
     if a.editable
       .edit
+        button.eToggle Save
         .have
           img.icon(src='/icon/' + (have_icon || site.defaultHave))
           .text

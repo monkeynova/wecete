@@ -14,7 +14,7 @@ html
   ul#AchievementList
     for a in collection.achievements
       li
-        a(href='/achievement/'+a.id onClick="startEditAchievement( this ); return false;")
+        a(href='/achievement/'+a.id)
           +achievement(a)
     if collection.editable
       p#AchievementInsert
@@ -23,7 +23,7 @@ html
         p= 'Adding...'
       #AchievementTemplate(style="display:none;")
         li
-          a(href='/achievement/???' onClick="startEditAchievement( this ); return false;")
+          a(href='/achievement/???')
             +achievement( {} )
 
   +footer
