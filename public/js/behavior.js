@@ -26,8 +26,33 @@ function newAchievement( collection_id )
 
 function toggleAchievement( domAchievement )
 {
-    $('.have',domAchievement).toggle();
-    $('.need',domAchievement).toggle();
+    var newHave = 1;
+    if ( domAchievement.attr( 'have' ) )
+    {
+	newHave = 0;
+    }
+
+    domAchievement.attr( 'have', newHave );
+
+    var id = domAchievement.attr( 'achievementId' );
+
+    $.ajax
+    ({
+	url : '/achievement/have',
+	data : 
+	{
+    	   achievement : id,
+	   have : newHave
+	}
+    })
+    .then
+    (
+	function ()
+	{
+	    $('.have',domAchievement).toggle();
+	    $('.need',domAchievement).toggle();
+	}
+    );
 }
 
 function startEditAchievement( domAchievement )
@@ -71,6 +96,7 @@ function finishEditAchievement( domAchievement )
 
 function addEventHandlers( maybeParent )
 {
+    $('.achievement',maybeParent).map( function() { if ( $(this).attr( 'have' ) ) { $('.have',$(this)).show(); $('.need',$(this)).hide(); } } );
     $('.achievement',maybeParent).on
     (
         'click',

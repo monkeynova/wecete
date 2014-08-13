@@ -29,8 +29,8 @@ li
     width : 772px;
 }
 
-.achievement .have { display : block; }
-.achievement .need { display : none; }
+.achievement .have { display : none; }
+.achievement .need { display : block; }
 
 .achievement .view { display : block; }
 .achievement .edit { display : none; }

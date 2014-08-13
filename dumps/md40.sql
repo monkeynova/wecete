@@ -175,6 +175,15 @@ INSERT INTO "achievements" VALUES(189, 'Half a man', 'Complete 50 achievements',
 INSERT INTO "achievements" VALUES(190, 'Power level is rising', 'Complete 75 achievements', NULL, NULL, 2);
 INSERT INTO "achievements" VALUES(191, 'True /fit/zen', 'Complete all 116 achievements', NULL, NULL, 2);
 CREATE TABLE haves (  user INTEGER,  achievement INTEGER,   earned DATETIME,   FOREIGN KEY( user ) REFERENCES user(id),  FOREIGN KEY( achievement ) REFERENCES achievement(id));
+INSERT INTO "haves" VALUES(1, 43, '2014-08-13');
+INSERT INTO "haves" VALUES(1, 44, '2014-08-13');
+INSERT INTO "haves" VALUES(1, 49, '2014-08-13');
+INSERT INTO "haves" VALUES(1, 52, '2014-08-13');
+INSERT INTO "haves" VALUES(1, 53, '2014-08-13');
+INSERT INTO "haves" VALUES(1, 58, '2014-08-13');
+INSERT INTO "haves" VALUES(1, 59, '2014-08-13');
+INSERT INTO "haves" VALUES(1, 65, '2014-08-13');
+INSERT INTO "haves" VALUES(1, 71, '2014-08-13');
 CREATE TABLE user_follows (  follower INTEGER,   followee INTEGER,   FOREIGN KEY( follower ) REFERENCES user(id),  FOREIGN KEY( followee ) REFERENCES user(id) );
 CREATE TABLE collection_follows (  user INTEGER,   collection INTEGER,   FOREIGN KEY( user ) REFERENCES users(id),  FOREIGN KEY( collection ) REFERENCES collections(id) );
 COMMIT;

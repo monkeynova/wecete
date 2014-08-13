@@ -1,5 +1,5 @@
 mixin achievement(a)
-  .achievement(id='Achievement-' + a.id achievementId=a.id)
+  .achievement(id='Achievement-' + a.id achievementId=a.id have=a.have && a.have.earned)
     form
       .view
         if a.editable

@@ -11,6 +11,7 @@ var db = new sqlite3.Database( db_file );
 var site = require('./site').site();
 
 db.denodeAll = Promise.denodeify( db.all );
+db.denodeRun = Promise.denodeify( db.run );
 
 function currentUser(req)
 {
@@ -35,6 +36,22 @@ function canWrite(req,editable,userID)
     }
 
     return false;
+}
+
+function htmlErrorSender(res)
+{
+    return function (err)
+    {
+	res.render('error', { site : site, error : err } );
+    }
+}
+
+function jsonErrorSender(res)
+{
+    return function (err)
+    {
+	res.send( { error : err } );
+    }
 }
 
 exports.index = function(req, res)
@@ -93,9 +110,9 @@ exports.user = function(req,res)
 
 exports.collection = function(req,res)
 {
-    var user = currentUser( req );
+    var userID = currentUser( req );
 
-    db.denodeAll( "SELECT * from collections WHERE id=$id;", { $id : req.params.id } )
+    db.denodeAll( "SELECT * FROM collections WHERE id=$id;", { $id : req.params.id } )
     .then
     (
 	function (collections)
@@ -104,27 +121,32 @@ exports.collection = function(req,res)
             collection.editable = canWrite( req, collection );
 	    Promise.all			
 	    ([
-		db.denodeAll( "SELECT * from achievements where collection = $collectionID;", { $collectionID : collection.id } ),
-		db.denodeAll( "SELECT * FROM users WHERE id=$id;", { $id : collection.owner } )
+		db.denodeAll( "SELECT * FROM achievements WHERE collection = $collectionID;", { $collectionID : collection.id } ),
+		db.denodeAll( "SELECT * FROM users WHERE id=$id;", { $id : collection.owner } ),
+		db.denodeAll( "SELECT * FROM haves WHERE user=$user AND achievement IN ( SELECT id from achievements WHERE collection = $collectionID)", { $collectionID : collection.id, $user : userID } )
 	    ])
 	    .then
 	    (
 		function (data)
 		{
 		    var achievements = data[0] || [];
-		    var owners = data[1] || {};
+		    var owners = data[1] || [];
+		    var haves = data[2] || [];
 
-                    achievements.forEach( function(a) { a.owner = collection.owner; a.editable = canWrite( req, a ) } );
+		    var havesById = {};
+		    haves.forEach( function(h) { havesById[h.achievement] = h; } );
+
+                    achievements.forEach( function(a) { a.owner = collection.owner; a.editable = canWrite( req, a ); a.have = havesById[a.id] } );
 		    collection.achievements = achievements;
 
-		    collection.owner = owners[0];
+		    collection.owner = owners[0] || {};
 
 		    res.render('collection', { site : site, collection : collection } );
 		},
-		function (err) { res.render( 'error', { site : site, error : err } ); }
+		htmlErrorSender( res )
 	    );
 	},
-	function (err) { res.render( 'error', { site : site, error : err } ); }
+	htmlErrorSender( res )
     );
 };
 
@@ -176,19 +198,36 @@ exports.editAchievement = function(req,res)
 
     // XXX assert( canWrite() );
 
-    db.run
+    db.denodeRun
     (
 	"UPDATE achievements SET title=$title, description=$description WHERE id=$id",
         {
    	        $id : achievementID,
    	        $title : newTitle,
 		$description : newDescription
-	},
-	function (err)
-        {
-	    res.send( { updated : 1, err : err } );
 	}
-    );
+    )
+    .then( res.send( { updated : 1 } ), jsonErrorSender( res ) );
+}
+
+exports.haveAchievement = function(req,res)
+{
+    var user = currentUser( req );
+    var achievement = req.query.achievement;
+    var have = req.query.have == true;
+
+    var binds =
+    {
+        $user : user,
+	$achievement : achievement
+    };
+
+    var command = have ? "INSERT INTO haves VALUES ( $user, $achievement, date('now') );"
+                       : "DELETE FROM haves WHERE user = $user AND achievement = $achievement;";
+
+    console.log( command );
+    
+    db.denodeRun( command, binds ).then( res.send( { updated : 1 } ), jsonErrorSender( res ) );
 }
 
 exports.newCollection = function(req,res)
