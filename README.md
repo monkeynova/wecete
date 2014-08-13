@@ -17,6 +17,7 @@ ToDo
  * Save have/need state
  * BUG: Stray clicks on the right go to achievement page
  * Icon upload
+ * Delete achievement
 * Users
  * Permisions
  * New Users
