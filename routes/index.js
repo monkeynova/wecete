@@ -225,8 +225,6 @@ exports.haveAchievement = function(req,res)
     var command = have ? "INSERT INTO haves VALUES ( $user, $achievement, date('now') );"
                        : "DELETE FROM haves WHERE user = $user AND achievement = $achievement;";
 
-    console.log( command );
-    
     db.denodeRun( command, binds ).then( res.send( { updated : 1 } ), jsonErrorSender( res ) );
 }
 
