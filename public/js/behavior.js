@@ -7,7 +7,8 @@ function newAchievement( collection_id )
 
     $.ajax
     ({
-      url : '/achievement/add?collection=' + collection_id,
+        url : '/achievement/add',
+        data : { collection : collection_id }
     })
     .always(function( response )
     {
@@ -17,7 +18,7 @@ function newAchievement( collection_id )
 	toAdd.find('a').attr('href','/achievement/' + response.newid);
 	spinner.replaceWith( toAdd );
         addEventHandlers( toAdd );
-	toggleEditAchievement( toAdd.find( '.achievement' ) );
+	startEditAchievement( toAdd.find( '.achievement' ) );
     });
 }
 
@@ -27,30 +28,43 @@ function toggleAchievement( domAchievement )
     $('.need',domAchievement).toggle();
 }
 
-function toggleEditAchievement( domAchievement )
+function startEditAchievement( domAchievement )
 {
-    console.log( 'toggleEdit' );
-    domAchievement.attr
-    (
-        'editing',
-        function()
-        {
-            var curValue = $( this ).attr( 'editing' );
-            if ( curValue === undefined || curValue == 0 )
-            {
-                console.log( curValue + " => 1" );
-                return 1;
-            }
-            console.log( curValue + " => 0" );
-            return 0;
-        }
-    );
-    $('.view',domAchievement).toggle();
-    $('.edit',domAchievement).toggle();
-    if ( domAchievement.attr( 'editing' ) )
+    console.log( 'start edit' );
+    domAchievement.attr( 'editing', 1 );
+    $('.view',domAchievement).hide();
+    $('.edit',domAchievement).show();
+    $('.edit .title',domAchievement).focus();
+}
+
+function finishEditAchievement( domAchievement )
+{
+    var id = domAchievement.attr( 'achievementId' );
+    var newTitle = $('input.title',domAchievement).val();
+    var newDescription = $('input.description',domAchievement).val();
+
+    $.ajax
+    ({
+        url : '/achievement/edit',
+	data :
+	{
+	    achievement : id,
+	    title : newTitle,
+	    description : newDescription
+	}
+    })
+    .always(function()
     {
-        $('.edit .title',domAchievement).focus();
-    }
+	domAchievement.attr( 'editing', 0 );
+
+	$('.view',domAchievement).show();
+	$('.view .title',domAchievement).text( newTitle );
+	$('.view .description',domAchievement).text( newDescription );
+
+	$('.edit',domAchievement).hide();
+	$('.edit .title',domAchievement).val( newTitle );
+	$('.edit .description',domAchievement).val( newDescription );
+    });
 }
 
 function addEventHandlers( maybeParent )
@@ -68,13 +82,23 @@ function addEventHandlers( maybeParent )
             return false;
         }
     );
-    $('.eToggle',maybeParent).on
+    $('.editAchievement',maybeParent).on
     (
         'click',
         function ()
         {
             var jqueryThis = $( this );
-            toggleEditAchievement( jqueryThis.parents( '.achievement' ) );
+            startEditAchievement( jqueryThis.parents( '.achievement' ) );
+            return false;
+        }
+    );
+    $('.saveAchievement',maybeParent).on
+    (
+        'click',
+        function ()
+        {
+            var jqueryThis = $( this );
+            finishEditAchievement( jqueryThis.parents( '.achievement' ) );
             return false;
         }
     );

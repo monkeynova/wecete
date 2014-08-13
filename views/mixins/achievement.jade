@@ -1,9 +1,9 @@
 mixin achievement(a)
-  .achievement(id='Achievement-' + a.id)
+  .achievement(id='Achievement-' + a.id achievementId=a.id)
     form
       .view
         if a.editable
-          button.eToggle Edit
+          button.editAchievement Edit
         .have
           img.icon(src='/icon/' + (have_icon || site.defaultHave))
           .text
@@ -16,7 +16,7 @@ mixin achievement(a)
             .description= a.description
       if a.editable
         .edit
-          button.eToggle(tabindex=5) Save
+          button.saveAchievement(tabindex=5) Save
           .have
             img.icon(src='/icon/' + (have_icon || site.defaultHave))
             .text

@@ -34,7 +34,7 @@ app.get('/collection/add', routes.newCollection );
 app.get('/collection/edit', routes.editCollection );
 app.get('/collection/:id', routes.collection );
 app.get('/achievement/add', routes.newAchievement );
-app.get('/achievement/edit', routes.newAchievement );
+app.get('/achievement/edit', routes.editAchievement );
 app.get('/achievement/:id', routes.achievement );
 app.get('/icon/:id', routes.icon );
 

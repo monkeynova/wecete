@@ -43,7 +43,7 @@ exports.icon = function(req,res)
 {
     db.all
     (
-        "SELECT * from icons where id = " + req.params.id + ";",
+        "SELECT * FROM icons WHERE id=$id;", { $id : req.params.id },
         function (err,icons)
         {
 	    var icon = icons[0] || {};
@@ -58,7 +58,7 @@ exports.user = function(req,res)
     var user_id = req.params.id || currentUser( req );
     db.all
     (
-        "SELECT * from users where id = " + user_id + ";",
+        "SELECT * FROM users WHERE id=$id;", { $id : user_id },
         function (err,users)
         {
             var user = users[0] || {};
@@ -66,7 +66,7 @@ exports.user = function(req,res)
 	    user.editable = canWrite( req, user );
 	    db.all
             (
-                "SELECT * from collections where owner = '" + user.id + "';",
+                "SELECT * FROM collections WHERE owner=$id;", { $id : user.id },
                  function (err,collections)
                  {
 		     user.collections = [];
@@ -92,14 +92,14 @@ exports.collection = function(req,res)
 {
     db.all
     (
-        "SELECT * from collections WHERE id = " + req.params.id + ";",
+        "SELECT * from collections WHERE id=$id;", { $id : req.params.id },
         function (err,collections)
         {
 	    var collection = collections[0] || {};
             collection.editable = canWrite( req, collection );
 	    db.all
             (
-                "SELECT * from achievements where collection = '" + collection.id + "';",
+                "SELECT * from achievements where collection = $collectionID;", { $collectionID : collection.id },
                 function (err,achievements)
                 {
                     achievements.forEach( function(a) { a.owner = collection.owner; a.editable = canWrite( req, a ) } );
@@ -107,7 +107,7 @@ exports.collection = function(req,res)
 
                     db.all
                     (
-                        "SELECT * from users where id = '" + collection.owner + "';",
+                        "SELECT * FROM users WHERE id=$id;", { $id : collection.owner },
                         function (err,owners)
                         {
                             collection.owner = owners[0];
@@ -124,7 +124,7 @@ exports.achievement = function(req,res)
 {
     db.all
     (
-        "SELECT * from achievements WHERE id = " + req.params.id + ";",
+        "SELECT * from achievements WHERE id=$id;", { $id : req.params.id },
         function (err,achievements)
         {
 	    res.render('achievement', { site : site, achievement : achievements[0] || {} } );
@@ -134,15 +134,15 @@ exports.achievement = function(req,res)
 
 exports.newAchievement = function(req,res)
 {
-    var collection_id = req.query.collection;
+    var collectionID = req.query.collection;
     db.serialize
     (
 	function()
         {
-	    db.run( "UPDATE collections SET modified=date('now') WHERE id = '" + collection_id + "';" );
+	    db.run( "UPDATE collections SET modified=date('now') WHERE id = $collectionID;", { $collectionID : collectionID } );
 	    db.run
 	    (
-		"INSERT INTO achievements ( collection ) VALUES ( '" + collection_id + "' );",
+		"INSERT INTO achievements ( collection ) VALUES ( $collectionID );", { $collectionID : collectionID },
 		function (err)
 		{
 		    db.all
@@ -151,7 +151,7 @@ exports.newAchievement = function(req,res)
 			function (err,newAchievements)
 			{
 			    var newAchievement = newAchievements[0] || {};
-			    res.send( { newid : newAchievement.id } );
+			    res.send( { newid : newAchievement.id, err : err } );
 			}
 		    );
 		}
@@ -162,7 +162,25 @@ exports.newAchievement = function(req,res)
 
 exports.editAchievement = function(req,res)
 {
-    res.send( 404, 'Not Found');
+    var achievementID = req.query.achievement;
+    var newTitle = req.query.title;
+    var newDescription = req.query.description;
+
+    // XXX assert( canWrite() );
+
+    db.run
+    (
+	"UPDATE achievements SET title=$title, description=$description WHERE id=$id",
+        {
+   	        $id : achievementID,
+   	        $title : newTitle,
+		$description : newDescription
+	},
+	function (err)
+        {
+	    res.send( { updated : 1, err : err } );
+	}
+    );
 }
 
 exports.newCollection = function(req,res)
