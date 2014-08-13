@@ -16,9 +16,11 @@ function newAchievement( collection_id )
 	toAdd.css( 'display', 'block' );
 	toAdd.id = 'Achievement-' + response.newid;
 	toAdd.find('a').attr('href','/achievement/' + response.newid);
+	var achievementDom = toAdd.find( '.achievement' );
+	achievementDom.attr( 'achievementID', response.newid );
 	spinner.replaceWith( toAdd );
         addEventHandlers( toAdd );
-	startEditAchievement( toAdd.find( '.achievement' ) );
+	startEditAchievement( achievementDom );
     });
 }
 
