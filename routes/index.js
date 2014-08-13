@@ -4,10 +4,13 @@
  */
 
 var sqlite3 = require('sqlite3').verbose();
+var Promise = require('promise');
 var path = require('path');
 var db_file = path.join( process.env.HOME, 'wecete.db' );
 var db = new sqlite3.Database( db_file );
 var site = require('./site').site();
+
+db.denodeAll = Promise.denodeify( db.all );
 
 function currentUser(req)
 {
@@ -90,33 +93,38 @@ exports.user = function(req,res)
 
 exports.collection = function(req,res)
 {
-    db.all
+    var user = currentUser( req );
+
+    db.denodeAll( "SELECT * from collections WHERE id=$id;", { $id : req.params.id } )
+    .then
     (
-        "SELECT * from collections WHERE id=$id;", { $id : req.params.id },
-        function (err,collections)
+	function (collections)
         {
 	    var collection = collections[0] || {};
             collection.editable = canWrite( req, collection );
-	    db.all
-            (
-                "SELECT * from achievements where collection = $collectionID;", { $collectionID : collection.id },
-                function (err,achievements)
-                {
+	    Promise.all			
+	    ([
+		db.denodeAll( "SELECT * from achievements where collection = $collectionID;", { $collectionID : collection.id } ),
+		db.denodeAll( "SELECT * FROM users WHERE id=$id;", { $id : collection.owner } )
+	    ])
+	    .then
+	    (
+		function (data)
+		{
+		    var achievements = data[0] || [];
+		    var owners = data[1] || {};
+
                     achievements.forEach( function(a) { a.owner = collection.owner; a.editable = canWrite( req, a ) } );
 		    collection.achievements = achievements;
 
-                    db.all
-                    (
-                        "SELECT * FROM users WHERE id=$id;", { $id : collection.owner },
-                        function (err,owners)
-                        {
-                            collection.owner = owners[0];
-                            res.render('collection', { site : site, collection : collection } );
-                        }
-                    );
-		}
-            );
-	}
+		    collection.owner = owners[0];
+
+		    res.render('collection', { site : site, collection : collection } );
+		},
+		function (err) { res.render( 'error', { site : site, error : err } ); }
+	    );
+	},
+	function (err) { res.render( 'error', { site : site, error : err } ); }
     );
 };
 

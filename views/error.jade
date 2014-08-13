@@ -1,0 +1,10 @@
+include mixins/header.jade
+
+doctype html
+html
+  +header( 'Internal error: ' + error )
+
+  h1= error
+  p= longmess
+
+  +footer
