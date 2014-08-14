@@ -20,6 +20,9 @@ ToDo
  * Permisions
  * New Users
   * Facebook auth
+* Topbar
+ * Icon/Favicon
+ * Login
 * 3rd Party
  * Pinterest
   * Create achievement board
