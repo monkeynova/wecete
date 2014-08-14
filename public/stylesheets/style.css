@@ -43,9 +43,9 @@ li
     margin: 4px 4px 10px 4px;
 }
 
-.editAchievement, .saveAchievement, .cancelEditAchievement { float : right; }
-.editAchievement { display : none; }
-a:hover .editAchievement { display : block; }
+.achievementButtonBar { float : right; }
+.view .achievementButtonBar { display : none; }
+li:hover .view .achievementButtonBar { display : block; }
 
 .saveAchievement { color : green; }
 .cancelEditAchievement { color : red; }

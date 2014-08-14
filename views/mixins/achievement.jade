@@ -2,8 +2,10 @@ mixin achievement(a)
   .achievement(id='Achievement-' + a.id achievementId=a.id have=a.have && a.have.earned)
     form
       .view
-        if a.editable
-          button.editAchievement Edit
+        .achievementButtonBar
+          button.toggleAchievement Mark/Unmark
+          if a.editable
+              button.editAchievement Edit
         .have
           img.icon(src='/icon/' + (have_icon || site.defaultHave))
         .need
@@ -13,8 +15,9 @@ mixin achievement(a)
           .description= a.description
       if a.editable
         .edit
-          button.saveAchievement(tabindex=5) &#x2713;
-          button.cancelEditAchievement(tabindex=5) X
+          .achievementButtonBar
+            button.cancelEditAchievement(tabindex=5) X
+            button.saveAchievement(tabindex=5) &#x2713;
           .have
             img.icon(src='/icon/' + (have_icon || site.defaultHave))
           .need

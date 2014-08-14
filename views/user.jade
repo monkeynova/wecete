@@ -14,6 +14,6 @@ html
   ul
   for c in user.collections
     a(href='/collection/'+c.id)
-      li= c.title  
+      li #{c.title} (#{c.haves || 0}/#{c.count})
 
   +footer
