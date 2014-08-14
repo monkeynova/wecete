@@ -57,11 +57,19 @@ function toggleAchievement( domAchievement )
 
 function startEditAchievement( domAchievement )
 {
-    console.log( 'start edit' );
     domAchievement.attr( 'editing', 1 );
     $('.view',domAchievement).hide();
     $('.edit',domAchievement).show();
+    $('.edit .title',domAchievement).val( $('.view .title:first',domAchievement).text() );
+    $('.edit .description',domAchievement).val( $('.view .description:first',domAchievement).text() );
     $('.edit .title',domAchievement).focus();
+}
+
+function abortEditAchievement( domAchievement )
+{
+    domAchievement.attr( 'editing', 0 );
+    $('.view',domAchievement).show();
+    $('.edit',domAchievement).hide();
 }
 
 function finishEditAchievement( domAchievement )
@@ -129,5 +137,27 @@ function addEventHandlers( maybeParent )
             finishEditAchievement( jqueryThis.parents( '.achievement' ) );
             return false;
         }
+    );
+    $('.cancelEditAchievement',maybeParent).on
+    (
+        'click',
+        function ()
+        {
+            var jqueryThis = $( this );
+            abortEditAchievement( jqueryThis.parents( '.achievement' ) );
+            return false;
+        }
+    );
+    $('.edit .title, .edit .description',maybeParent).on
+    (
+	'keyup',
+	function (e)
+	{
+	    if ( e.which == 27 )
+	    {
+		var jqueryThis = $( this );
+		abortEditAchievement( jqueryThis.parents( '.achievement' ) );
+	    }
+	}
     );
 }

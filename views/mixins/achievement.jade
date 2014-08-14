@@ -6,29 +6,21 @@ mixin achievement(a)
           button.editAchievement Edit
         .have
           img.icon(src='/icon/' + (have_icon || site.defaultHave))
-          .text
-            .title= a.title
-            .description= a.description
         .need
           img.icon(src='/icon/' + (need_icon || site.defaultNeed))
-          .text
-            .title= a.title
-            .description= a.description
+        .text
+          .title= a.title
+          .description= a.description
       if a.editable
         .edit
-          button.saveAchievement(tabindex=5) Save
+          button.saveAchievement(tabindex=5) &#x2713;
+          button.cancelEditAchievement(tabindex=5) X
           .have
             img.icon(src='/icon/' + (have_icon || site.defaultHave))
-            .text
-              .title
-                input.title(name=title value=a.title size=30 tabindex=1)
-              .description
-                input.description(name=description value=a.description size=80 tabindex=2)
           .need
             img.icon(src='/icon/' + (need_icon || site.defaultNeed))
-            .text
-              .title
-                input.title(name=title value=a.title size=30 tabindex=3)
-              .description
-                input.description(name=description value=a.description size=80 tabindex=4)
-
+          .text
+            .title
+              input.title(name=title value=a.title size=30 tabindex=1)
+            .description
+              input.description(name=description value=a.description size=80 tabindex=2)
