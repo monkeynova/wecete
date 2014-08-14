@@ -1,0 +1,5 @@
+mixin user(user)
+  .user
+    a(href='/user/' + user.id title=user.username)
+      img(src='/icon/' + (user.avatar || site.defaultAvatar))
+      .username= user.username

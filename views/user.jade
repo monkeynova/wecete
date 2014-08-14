@@ -1,19 +1,21 @@
 include mixins/header.jade
+include mixins/user.jade
 
 doctype html
 html
   +header( 'User ' + user.username )
 
-  p
-    a(href='/user/' + user.id)
-      img(src='/icon/' + (user.avatar || site.defaultAvatar) title=user.username)
+  .main
+    .leftcol
+      h1= user.username
+      p= user.realname
+      h2 Collections
+      ul
+      for c in user.collections
+        a(href='/collection/'+c.id)
+          li #{c.title} (#{c.haves || 0}/#{c.count})
 
-  h1= user.username
-  p= user.realname
-  h2 Collections
-  ul
-  for c in user.collections
-    a(href='/collection/'+c.id)
-      li #{c.title} (#{c.haves || 0}/#{c.count})
+    .rightcol
+      +user( user )
 
   +footer

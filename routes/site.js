@@ -2,7 +2,7 @@ var markdown = require( 'markdown' ).markdown;
 var sqlite3 = require('sqlite3').verbose();
 var Promise = require('promise');
 var path = require('path');
-var db_file = path.join( process.env.HOME, 'wecete.db' );
+var db_file = path.join( process.env.HOME, 'www', 'dbs', 'wecete.db' );
 var db = new sqlite3.Database( db_file );
 
 db.denodeAll = Promise.denodeify( db.all );
