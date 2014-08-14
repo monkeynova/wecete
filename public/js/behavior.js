@@ -105,16 +105,12 @@ function finishEditAchievement( domAchievement )
 function addEventHandlers( maybeParent )
 {
     $('.achievement',maybeParent).map( function() { if ( $(this).attr( 'have' ) ) { $('.have',$(this)).show(); $('.need',$(this)).hide(); } } );
-    $('.achievement',maybeParent).on
+    $('.toggleAchievement',maybeParent).on
     (
         'click',
         function ()
         {
-            var isEditing = $( this ).attr( 'editing' );
-            if ( isEditing === undefined || isEditing == 0 )
-            {
-                toggleAchievement( $( this ) );
-            }
+	    toggleAchievement( $( this ).parents( '.achievement' ) );
             return false;
         }
     );
@@ -123,8 +119,7 @@ function addEventHandlers( maybeParent )
         'click',
         function ()
         {
-            var jqueryThis = $( this );
-            startEditAchievement( jqueryThis.parents( '.achievement' ) );
+            startEditAchievement( $( this ).parents( '.achievement' ) );
             return false;
         }
     );
@@ -133,8 +128,7 @@ function addEventHandlers( maybeParent )
         'click',
         function ()
         {
-            var jqueryThis = $( this );
-            finishEditAchievement( jqueryThis.parents( '.achievement' ) );
+            finishEditAchievement( $( this ).parents( '.achievement' ) );
             return false;
         }
     );
@@ -143,8 +137,7 @@ function addEventHandlers( maybeParent )
         'click',
         function ()
         {
-            var jqueryThis = $( this );
-            abortEditAchievement( jqueryThis.parents( '.achievement' ) );
+            abortEditAchievement( $( this ).parents( '.achievement' ) );
             return false;
         }
     );
@@ -155,8 +148,7 @@ function addEventHandlers( maybeParent )
 	{
 	    if ( e.which == 27 )
 	    {
-		var jqueryThis = $( this );
-		abortEditAchievement( jqueryThis.parents( '.achievement' ) );
+		abortEditAchievement( $( this ).parents( '.achievement' ) );
 	    }
 	}
     );
