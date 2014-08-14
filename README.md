@@ -13,8 +13,6 @@ ToDo
 * Achievements
  * Keep "new" button visible after adding new achievement
  * Tab order from one achievement to the next
- * Cancel edit
- * Save have/need state
  * BUG: Stray clicks on the right go to achievement page
  * Icon upload
  * Delete achievement
