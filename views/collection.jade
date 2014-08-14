@@ -9,7 +9,7 @@ html
     a(href='/user/' + collection.owner.id)
       img(src='/icon/' + (collection.owner.avatar || site.defaultAvatar) title=collection.owner.username)
   h1= collection.title
-  p= collection.description
+  div!= site.markdown.toHTML(collection.description) 
 
   ul#AchievementList
     for a in collection.achievements
