@@ -65,6 +65,7 @@ function toggleAchievement( domAchievement )
 
 function startEditAchievement( domAchievement )
 {
+    domAchievement.attr( 'editing', 1 );
     $('.view',domAchievement).hide();
     $('.edit',domAchievement).show();
     $('.edit .title',domAchievement).val( $('.view .title:first',domAchievement).text() );
@@ -74,6 +75,7 @@ function startEditAchievement( domAchievement )
 
 function abortEditAchievement( domAchievement )
 {
+    domAchievement.attr( 'editing', 0 );
     $('.view',domAchievement).show();
     $('.edit',domAchievement).hide();
 }
@@ -96,6 +98,7 @@ function finishEditAchievement( domAchievement )
     })
     .always(function()
     {
+	domAchievement.attr( 'editing', 0 );
 	$('.view',domAchievement).show();
 	$('.view .title',domAchievement).text( newTitle );
 	$('.view .description',domAchievement).text( newDescription );
@@ -174,12 +177,28 @@ function addAchievementHandlers( maybeParent )
     );
     $('.achievement .edit .title, .achievement .edit .description',maybeParent).on
     (
+	'keypress',
+	function (e)
+	{
+	    switch ( e.which )
+	    {
+	    case 10:
+	    case 13:
+		finishEditAchievement( $( this ).parents( '.achievement' ) );
+		break;
+	    }
+	}
+    );
+    $('.achievement .edit .title, .achievement .edit .description',maybeParent).on
+    (
 	'keyup',
 	function (e)
 	{
-	    if ( e.which == 27 )
+	    switch ( e.which )
 	    {
+	    case 27:
 		abortEditAchievement( $( this ).parents( '.achievement' ) );
+		break;
 	    }
 	}
     );
@@ -216,6 +235,7 @@ function startEditCollection( domAchievement )
     $('.edit .title',domAchievement).val( $('.view .title:first',domAchievement).text() );
     $('.edit .description',domAchievement).val( $('.view .description:first',domAchievement).text() );
     $('.edit .title',domAchievement).focus();
+    $('.edit .title',domAchievement).select();
 }
 
 function abortEditCollection( domAchievement )

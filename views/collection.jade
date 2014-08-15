@@ -20,7 +20,7 @@ html
           .hidden.description= collection.description
         .edit
           .buttonBar
-            button.cancel.cancelEditCollection(tabindex=5) X
+            button.cancel.cancelEditCollection(tabindex=6) X
             button.save.saveCollection(tabindex=5) &#x2713;
 
           input.title(name=title value=collection.title size=30)
@@ -32,7 +32,7 @@ html
       ul#AchievementList
         for a in collection.achievements
           li.hasButtonBar
-            a(href='/achievement/'+a.id)
+            a(href='/achievement/'+a.id onClick="return $(this).find('.achievement').attr('editing') != 1")
               +achievement(a)
         if collection.editable
           p#AchievementInsert
@@ -41,7 +41,7 @@ html
             p= 'Adding...'
           #AchievementTemplate(style="display:none;")
             li.hasButtonBar
-              a(href='/achievement/???')
+              a(href='/achievement/???' onClick="return $(this).find('.achievement').attr('editing') != 1")
                 +achievement( { editable : 1 } )
   
     .rightcol
