@@ -44,6 +44,14 @@ exports.create = function(req,res)
     );
 }
 
+exports.delete = function(req,res)
+{
+    var achievementID = req.query.achievement;
+
+    db.denodeAll( "DELETE FROM achievements WHERE id=$achievement;", { $achievement : achievementID } )
+    .then( function () { res.send( { removed : 1 } ); }, site.jsonErrorSender( res ) );
+}
+
 exports.edit = function(req,res)
 {
     var achievementID = req.query.achievement;

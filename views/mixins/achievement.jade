@@ -5,6 +5,7 @@ mixin achievement(a)
         .achievementButtonBar
           button.toggleAchievement Mark/Unmark
           if a.editable
+              button.deleteAchievement Delete
               button.editAchievement Edit
         .have
           img.icon(src='/icon/' + (have_icon || site.defaultHave))

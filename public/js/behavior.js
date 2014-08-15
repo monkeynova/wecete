@@ -102,6 +102,24 @@ function finishEditAchievement( domAchievement )
     });
 }
 
+function deleteAchievement( domAchievement )
+{
+    var id = domAchievement.attr( 'achievementId' );
+
+    $.ajax
+    ({
+        url : '/achievement/delete',
+	data :
+	{
+	    achievement : id,
+	}
+    })
+    .always(function()
+    {
+	domAchievement.parents( 'li' ).remove();
+    });
+}
+
 function addEventHandlers( maybeParent )
 {
     $('.achievement',maybeParent).map( function() { if ( $(this).attr( 'have' ) ) { $('.have',$(this)).show(); $('.need',$(this)).hide(); } } );
@@ -120,6 +138,15 @@ function addEventHandlers( maybeParent )
         function ()
         {
             startEditAchievement( $( this ).parents( '.achievement' ) );
+            return false;
+        }
+    );
+    $('.deleteAchievement',maybeParent).on
+    (
+        'click',
+        function ()
+        {
+            deleteAchievement( $( this ).parents( '.achievement' ) );
             return false;
         }
     );

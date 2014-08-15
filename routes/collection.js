@@ -52,6 +52,11 @@ exports.create = function(req,res)
     res.send( 404, 'Not Found');
 }
 
+exports.delete = function(req,res)
+{
+    res.send( 404, 'Not Found');
+}
+
 exports.edit = function(req,res)
 {
     res.send( 404, 'Not Found');
