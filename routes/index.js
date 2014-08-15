@@ -73,7 +73,7 @@ exports.user = function(req,res)
 	    var haves = results[2] || [];
 
 	    var idToCounts = {};
-	    collections.forEach( function(c) { idToCounts[c.id] = {} } );
+	    collections.forEach( function(c) { idToCounts[c.id] = { count : 0, have : 0} } );
 	    counts.forEach( function(c) { if ( idToCounts[c.collection] ) { idToCounts[c.collection].count = c.count; } } );
 	    haves.forEach( function(h) { if ( idToCounts[h.collection] ) { idToCounts[h.collection].haves = h.haves; } } );
 

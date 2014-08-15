@@ -17,24 +17,26 @@ a
     background : #fff;
     border : solid 1px black;
     position : relative;
+    margin : 0 auto;
+}
+.mainjoin
+{
+    clear : both;
 }
 
 .leftcol
 {
-    width : 780px;
+    width : 778px;
     border-right : solid 1px black;
     padding : 5px;
-    position : relative;
-    top : 0px;
-    left : 0px;
+    float : left;
 }
 .rightcol
 {
-    width : 220px;
+    width : 300px;
+    border-left : solid 1px black;
     padding : 5px;
-    position : absolute;
-    top : 0px;
-    right : 0px;
+    float : right;
 }
 
 ul
@@ -49,6 +51,11 @@ li
     margin : 4px;
 }
 
+.hidden { display : none; }
+
+.view { display : block; }
+.edit { display : none; }
+
 .achievement 
 {
     background: #4F4F4E;
@@ -61,9 +68,6 @@ li
 .achievement .have { display : none; }
 .achievement .need { display : block; }
 
-.achievement .view { display : block; }
-.achievement .edit { display : none; }
-
 .achievement .icon 
 {
     float : left;
@@ -72,12 +76,12 @@ li
     margin: 4px 4px 10px 4px;
 }
 
-.achievementButtonBar { float : right; }
-.view .achievementButtonBar { display : none; }
-li:hover .view .achievementButtonBar { display : block; }
+.buttonBar { float : right; }
+.view .buttonBar { display : none; }
+.hasButtonBar:hover .view .buttonBar { display : block; }
 
-.saveAchievement { color : green; }
-.cancelEditAchievement { color : red; }
+.save { color : green; }
+.cancel { color : red; }
 
 .achievement .title 
 {

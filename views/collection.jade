@@ -8,25 +8,45 @@ html
 
   .main
     .leftcol
-      h1= collection.title
-      div!= site.markdown.toHTML(collection.description) 
+      .collection.hasButtonBar(collectionID=collection.id)
+        .view
+          .buttonBar
+            button.followCollection Follow
+            if collection.editable
+                button.deleteCollection Delete
+                button.editCollection Edit
+          h1.title= collection.title || 'No Title'
+          div.mdDescription!= site.markdown.toHTML(collection.description || 'No description') 
+          .hidden.description= collection.description
+        .edit
+          .buttonBar
+            button.cancel.cancelEditCollection(tabindex=5) X
+            button.save.saveCollection(tabindex=5) &#x2713;
+
+          input.title(name=title value=collection.title size=30)
+          br
+          textarea.description(name=description value=collection.description cols=60 rows=10)
   
+      hr
+
       ul#AchievementList
         for a in collection.achievements
-          li
+          li.hasButtonBar
             a(href='/achievement/'+a.id)
               +achievement(a)
         if collection.editable
           p#AchievementInsert
-            a(href='/achievement/add' onClick="newAchievement( '" + collection.id + "' ); return false;") +
+            a(href='/achievement/add' onClick="newAchievement( '" + collection.id + "' ); return false;") New Achievement
           #AchievementSpinner(style="display:none;")
             p= 'Adding...'
           #AchievementTemplate(style="display:none;")
-            li
+            li.hasButtonBar
               a(href='/achievement/???')
                 +achievement( { editable : 1 } )
   
     .rightcol
       +user( collection.owner )
+
+    .mainjoin
 
   +footer

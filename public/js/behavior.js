@@ -1,3 +1,11 @@
+function addEventHandlers( maybeParent )
+{
+    addAchievementHandlers( maybeParent );
+    addCollectionHandlers( maybeParent );
+}
+
+/// Achievement functions
+
 function newAchievement( collection_id )
 {
     var spinner = $('#AchievementSpinner').clone();
@@ -57,7 +65,6 @@ function toggleAchievement( domAchievement )
 
 function startEditAchievement( domAchievement )
 {
-    domAchievement.attr( 'editing', 1 );
     $('.view',domAchievement).hide();
     $('.edit',domAchievement).show();
     $('.edit .title',domAchievement).val( $('.view .title:first',domAchievement).text() );
@@ -67,7 +74,6 @@ function startEditAchievement( domAchievement )
 
 function abortEditAchievement( domAchievement )
 {
-    domAchievement.attr( 'editing', 0 );
     $('.view',domAchievement).show();
     $('.edit',domAchievement).hide();
 }
@@ -90,8 +96,6 @@ function finishEditAchievement( domAchievement )
     })
     .always(function()
     {
-	domAchievement.attr( 'editing', 0 );
-
 	$('.view',domAchievement).show();
 	$('.view .title',domAchievement).text( newTitle );
 	$('.view .description',domAchievement).text( newDescription );
@@ -120,7 +124,7 @@ function deleteAchievement( domAchievement )
     });
 }
 
-function addEventHandlers( maybeParent )
+function addAchievementHandlers( maybeParent )
 {
     $('.achievement',maybeParent).map( function() { if ( $(this).attr( 'have' ) ) { $('.have',$(this)).show(); $('.need',$(this)).hide(); } } );
     $('.toggleAchievement',maybeParent).on
@@ -168,7 +172,7 @@ function addEventHandlers( maybeParent )
             return false;
         }
     );
-    $('.edit .title, .edit .description',maybeParent).on
+    $('.achievement .edit .title, .achievement .edit .description',maybeParent).on
     (
 	'keyup',
 	function (e)
@@ -176,6 +180,129 @@ function addEventHandlers( maybeParent )
 	    if ( e.which == 27 )
 	    {
 		abortEditAchievement( $( this ).parents( '.achievement' ) );
+	    }
+	}
+    );
+}
+
+/// Collection functions
+
+function newCollection()
+{
+    var spinner = $('#CollectionSpinner').clone();
+    spinner.insertBefore( $('#CollectionInsert') );
+
+    setTimeout( 100, function() { spinner.css( 'display', 'block' ) } );
+
+    $.ajax
+    ({
+        url : '/collection/add',
+    })
+    .always(function( response )
+    {
+	var toAdd = $('#CollectionTemplate').clone();
+	toAdd.css( 'display', 'block' );
+	toAdd.find('a').attr('href','/collection/' + response.newid);
+	spinner.replaceWith( toAdd );
+        addEventHandlers( toAdd );
+    });
+}
+
+
+function startEditCollection( domAchievement )
+{
+    $('.view',domAchievement).hide();
+    $('.edit',domAchievement).show();
+    $('.edit .title',domAchievement).val( $('.view .title:first',domAchievement).text() );
+    $('.edit .description',domAchievement).val( $('.view .description:first',domAchievement).text() );
+    $('.edit .title',domAchievement).focus();
+}
+
+function abortEditCollection( domAchievement )
+{
+    $('.view',domAchievement).show();
+    $('.edit',domAchievement).hide();
+}
+
+function finishEditCollection( domAchievement )
+{
+    var id = domAchievement.attr( 'collectionID' );
+    var newTitle = $('input.title',domAchievement).val();
+    var newDescription = $('textarea.description',domAchievement).val();
+
+    $.ajax
+    ({
+        url : '/collection/edit',
+	data :
+	{
+	    collection : id,
+	    title : newTitle,
+	    description : newDescription
+	}
+    })
+    .always(function(response)
+    {
+	$('.view',domAchievement).show();
+	$('.view .title',domAchievement).text( newTitle );
+	$('.view .description',domAchievement).text( newDescription );
+	if ( response.description_md )
+	{
+	    $('.view .mdDescription',domAchievement).html( response.description_md );
+	}
+
+	$('.edit',domAchievement).hide();
+	$('.edit .title',domAchievement).val( newTitle );
+	$('.edit .description',domAchievement).val( newDescription );
+    });
+}
+
+function addCollectionHandlers( maybeParent )
+{
+    $('.collection',maybeParent).map( function() { if ( $(this).attr( 'following' ) ) { $('.follow',$(this)).show(); $('.nofollow',$(this)).hide(); } } );
+    $('.editCollection',maybeParent).on
+    (
+        'click',
+        function ()
+        {
+            startEditCollection( $( this ).parents( '.collection' ) );
+            return false;
+        }
+    );
+    $('.deleteCollection',maybeParent).on
+    (
+        'click',
+        function ()
+        {
+            deleteCollection( $( this ).parents( '.collection' ) );
+            return false;
+        }
+    );
+    $('.saveCollection',maybeParent).on
+    (
+        'click',
+        function ()
+        {
+            finishEditCollection( $( this ).parents( '.collection' ) );
+            return false;
+        }
+    );
+    $('.cancelEditCollection',maybeParent).on
+    (
+        'click',
+        function ()
+        {
+            abortEditCollection( $( this ).parents( '.collection' ) );
+            return false;
+        }
+    );
+    $('.collection .edit .title, .collection .edit .description',maybeParent).on
+    (
+	'keyup',
+	function (e)
+	{
+	    if ( e.which == 27 )
+	    {
+		abortEditCollection( $( this ).parents( '.collection' ) );
 	    }
 	}
     );

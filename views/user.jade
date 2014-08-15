@@ -10,12 +10,23 @@ html
       h1= user.username
       p= user.realname
       h2 Collections
-      ul
-      for c in user.collections
-        a(href='/collection/'+c.id)
-          li #{c.title} (#{c.haves || 0}/#{c.count})
+      ul#CollectionList
+        for c in user.collections
+          li
+            a(href='/collection/'+c.id) #{c.title || 'No title'} (#{c.haves || 0}/#{c.count})
+        if user.editable
+          p#CollectionInsert
+            a(href='/collection/add' onClick="newCollection(); return false;") New Collection
+          #CollectionSpinner(style="display:none;")
+            p= 'Adding...'
+          #CollectionTemplate(style="display:none;")
+            li
+              a(href='/collection/???')
+                li= New
 
     .rightcol
       +user( user )
+
+    .mainjoin
 
   +footer

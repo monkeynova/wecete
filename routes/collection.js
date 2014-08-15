@@ -49,15 +49,42 @@ exports.view = function(req,res)
 
 exports.create = function(req,res)
 {
-    res.send( 404, 'Not Found');
+    var userID = site.currentUser( req );
+
+    db.denodeRun( "INSERT INTO collections ( created, modified, owner, privacy ) VALUES ( date('now'), date('now'), $userID, 1 );", { $userID : userID } )
+    .then( function () { return db.denodeAll( "SELECT last_insert_rowid() AS id FROM achievements;" ); }, site.jsonErrorSender( res ) )
+    .then( function ( rows ) { var newidrow = rows[0] || {}; res.send( { newid : newidrow.id } ) }, site.jsonErrorSender( res ) );
 }
 
 exports.delete = function(req,res)
 {
-    res.send( 404, 'Not Found');
+    var collectionID = req.query.collection;
+
+    db.denodeAll( "DELETE FROM collections WHERE id=collection;", { collection : collectionID } )
+    .then( function () { res.send( { removed : 1 } ); }, site.jsonErrorSender( res ) );
 }
 
 exports.edit = function(req,res)
 {
-    res.send( 404, 'Not Found');
+    var collectionID = req.query.collection;
+    var newTitle = req.query.title;
+    var newDescription = req.query.description || '';
+
+    // XXX assert( site.canWrite() );
+
+    db.denodeRun
+    (
+	"UPDATE collections SET title=$title, description=$description, modified=date('now') WHERE id=$id",
+        {
+   	    $id : collectionID,
+   	    $title : newTitle,
+	    $description : newDescription
+	}
+    )
+    .then( res.send( { updated : 1, description_md : siteData.markdown.toHTML( newDescription )  } ), site.jsonErrorSender( res ) );
+}
+
+exports.setFollow = function(req,res)
+{
+    res.send( 404, 'Not found' );
 }

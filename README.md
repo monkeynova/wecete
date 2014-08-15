@@ -7,9 +7,8 @@ ToDo
 ====
 
 * Collections
- * Edit title/description
- * New collection
  * BUG: Back button should cause refresh after edits
+ * Edit title from user page
 * Achievements
  * Keep "new" button visible after adding new achievement
  * Tab order from one achievement to the next
@@ -25,3 +24,6 @@ ToDo
 * 3rd Party
  * Pinterest
   * Create achievement board
+ * XBL/PSN/Steam
+  * Autoslurp achievements
+  * Autosync users achievements

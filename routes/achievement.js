@@ -19,36 +19,30 @@ exports.view = function(req,res)
 exports.create = function(req,res)
 {
     var collectionID = req.query.collection;
-    db.serialize
-    (
-	function()
-        {
-	    db.run( "UPDATE collections SET modified=date('now') WHERE id = $collectionID;", { $collectionID : collectionID } );
-	    db.run
-	    (
-		"INSERT INTO achievements ( collection ) VALUES ( $collectionID );", { $collectionID : collectionID },
-		function (err)
-		{
-		    db.all
-		    (
-			"SELECT last_insert_rowid() AS id FROM achievements;",
-			function (err,newAchievements)
-			{
-			    var newAchievement = newAchievements[0] || {};
-			    res.send( { newid : newAchievement.id, err : err } );
-			}
-		    );
-		}
-	    );
-	}
-    );
+
+    Promise.all
+    ([
+	db.denodeRun( "UPDATE collections SET modified=date('now') WHERE id = $collectionID;", { $collectionID : collectionID } ),
+	db.denodeRun( "INSERT INTO achievements ( collection ) VALUES ( $collectionID );", { $collectionID : collectionID } )
+    ])
+    .then( function () { return db.denodeAll( "SELECT last_insert_rowid() AS id FROM achievements;" ); }, site.jsonErrorSender( res ) )
+    .then( function ( rows ) { var newidrow = rows[0] || {}; res.send( { newid : newidrow.id } ) }, site.jsonErrorSender( res ) );
 }
 
 exports.delete = function(req,res)
 {
     var achievementID = req.query.achievement;
 
-    db.denodeAll( "DELETE FROM achievements WHERE id=$achievement;", { $achievement : achievementID } )
+    db.denodeRun
+    (
+	"UPDATE collections SET modified=date('now') WHERE id IN (SELECT collection FROM achievements WHERE id=$achievement);",
+        { $achievement : achievementID }
+    )
+    .then
+    (
+	function () { return db.denodeAll( "DELETE FROM achievements WHERE id=$achievement;", { $achievement : achievementID } ); }, 
+	site.jsonErrorSender( res )
+    )
     .then( function () { res.send( { removed : 1 } ); }, site.jsonErrorSender( res ) );
 }
 
@@ -64,9 +58,9 @@ exports.edit = function(req,res)
     (
 	"UPDATE achievements SET title=$title, description=$description WHERE id=$id",
         {
-   	        $id : achievementID,
-   	        $title : newTitle,
-		$description : newDescription
+   	    $id : achievementID,
+   	    $title : newTitle,
+	    $description : newDescription
 	}
     )
     .then( res.send( { updated : 1 } ), site.jsonErrorSender( res ) );
