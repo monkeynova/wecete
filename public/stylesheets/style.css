@@ -34,7 +34,6 @@ a
 .rightcol
 {
     width : 300px;
-    border-left : solid 1px black;
     padding : 5px;
     float : right;
 }
