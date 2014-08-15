@@ -26,6 +26,13 @@ html
 
     .rightcol
       +user( user )
+      hr
+      .services
+        ul
+          for s in user.services
+            li
+              a(href=s.user_url title=s.othername)= s.name
+
 
     .mainjoin
 

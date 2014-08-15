@@ -37,13 +37,23 @@ exports.user = function(req,res)
     var user_id = req.params.id || site.currentUser( req );
     var user;
 
-    db.denodeAll( "SELECT * FROM users WHERE id=$id;", { $id : user_id } ).then
+    Promise.all
+    ([
+	db.denodeAll( "SELECT * FROM users WHERE id=$id;", { $id : user_id } ),
+	db.denodeAll( "SELECT *, services.url as service_url, externalUsers.url as user_url FROM externalUsers, services WHERE user=$id AND externalUsers.service = services.id;", { $id : user_id } ),
+    ])
+    .then
     (
-        function (users)
+        function (results)
         {
+	    var users = results[0] || {};
+	    var services = results[1] || [];
+
             user = users[0] || {};
 	    user.owner = user.id;
 	    user.editable = site.canWrite( req, user );
+	    user.services = services;
+
 	    return Promise.all
 	    ([
 		db.denodeAll( "SELECT * FROM collections WHERE owner=$user;", { $user : user.id } ),
