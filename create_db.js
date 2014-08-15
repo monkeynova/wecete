@@ -1,8 +1,11 @@
 var fs = require( 'fs' );
 var path = require( 'path' );
 var sqlite3 = require( 'sqlite3' ).verbose();
-var db_fname = path.join( process.env.HOME, 'wecete.db' );
+var db_fname = path.join( process.env.HOME, 'www', 'dbs', 'wecete.db' );
 var db = new sqlite3.Database( db_fname );
+
+console.log( "Don't run this anymore" );
+process.exit();
 
 if ( fs.existsSync( db_fname ) )
 {
@@ -50,6 +53,18 @@ db.serialize
       "  website TEXT," +
       "  avatar INTEGER," +
       "  FOREIGN KEY( avatar ) REFERENCES icons(id)" +
+      ");"
+     );
+
+     console.log( 'Creating table 3rd party' );
+     db.run
+     (
+      "CREATE TABLE externalUsers " +
+      "(" +
+      "  othername TEXT," +
+      "  url TEXT," +
+      "  user INTEGER NOT NULL," +
+      "  FOREIGN KEY( user ) REFERENCES users(id)" +
       ");"
      );
 
@@ -129,6 +144,9 @@ db.serialize
      db.run( "INSERT INTO privacy VALUES ( 1, 'public' );" );
      db.run( "INSERT INTO privacy VALUES ( 2, 'followers' );" );
      db.run( "INSERT INTO users VALUES ( NULL, 'monkeynova', 'Keith Peters', 'keith@monkeynova.com', 'http://www.monkeynova.com/', NULL );");
+     db.run( "INSERT INTO users VALUES ( NULL, 'steam', 'Steam Connect', '', 'http://store.steampowered.com/', NULL );");
+     db.run( "INSERT INTO users VALUES ( NULL, 'psn', 'Playstation Network Connect', '', 'http://us.playstation.com/', NULL );");
+     db.run( "INSERT INTO users VALUES ( NULL, 'xbox', 'Xbox Live Connect', '', 'http://www.xbox.com/live/', NULL );");
      db.run( "INSERT INTO collections SELECT NULL, date('now'), date('now'), 'Test', 'Nothing to see here', users.id, privacy.id from users, privacy where users.username = 'monkeynova' AND privacy.name = 'public';" );
      db.run( "INSERT INTO achievements SELECT NULL, 'You''ve got Mail!', 'Receive an email asking if the user''s email is working', NULL, NULL, id from collections where title = 'Test';" );
      db.run( "INSERT INTO icons VALUES ( 0, 'image/png', 60, 60, 'need_check', @png )", fs.readFileSync( 'icons/need_check.png' ) );
